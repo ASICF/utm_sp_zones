@@ -12,6 +12,11 @@
  * @require plugins/AddLayers.js
  * @require plugins/RemoveLayer.js
  * @require RowExpander.js
+ * @require plugins/ZoomToLayerExtent.js
+ * @require plugins/WMSGetFeatureInfo.js
+ * @require plugins/Legend.js
+ * @require plugins/GoogleGeocoder.js
+ * @require widgets/ScaleOverlay.js
  * @require plugins/FeatureManager.js
  * @require plugins/QueryForm.js
  * @require plugins/FeatureGrid.js
@@ -32,11 +37,24 @@ var app = new gxp.Viewer({
             border: false,
             items: ["mymap"]
         }, {
-            id: "westpanel",
+            id: "westcontainer",	//changed from 'westpanel' to add legend
             xtype: "container",
-            layout: "fit",
+            layout: "vbox",	//changed from 'fit' to add legend
             region: "west",
-            width: 200
+            width: 200,
+			defaults: {	//from here down added to add legend
+				width: "100%",
+				layout: "fit"
+			},
+			items: [{
+				title: "Layers",
+				id: "westpanel",
+				border: false,
+				flex: 1
+			}, {
+				id: "legendpanel",
+				height: 250
+			}]
         }, {
             id: "southpanel",
             xtype: "panel",	//"container" cannot be collapsed
@@ -92,7 +110,19 @@ var app = new gxp.Viewer({
     }, {
         ptype: "gxp_navigationhistory",
         actionTarget: "map.tbar"
-    },{
+    }, {
+		ptype: "gxp_zoomtolayerextent",	//Anna: added 2 lines by following sdk documentation by OpenGeo
+		actionTarget: ["tree.tbar", "tree.contextMenu"]
+	}, {
+		ptype: "gxp_wmsgetfeatureinfo",	//Anna: added by following sdk documentation by OpenGeo
+		format:"grid",	//Anna: added to change pop-up format
+		//actionTarget: "map.tbar"	//Anna: for some reason not necessary in this case
+		outputConfig:{
+			width:400}
+	}, {
+		ptype: "gxp_legend",	//Anna: added 2 lines by following sdk documentation by OpenGeo
+		outputTarget: "legendpanel"
+	}, {
 		ptype: "gxp_featuremanager",
 		id: "ftr_manager",
 		paging: false,
@@ -120,7 +150,13 @@ var app = new gxp.Viewer({
 			id: "featuregrid",
 			//columnsSortable: !1	//false forbids from sorting and selecting output columns
 		}
-	}],
+	}, {
+			ptype: "gxp_googlegeocoder",//Anna: added 4 lines by following sdk documentation by OpenGeo
+			outputTarget: "map.tbar",
+			outputConfig: {
+				emptyText: "Search for a location ..."	//Anna: how do I find such property in documentation???
+			}
+		}],
     
     // layer sources
     sources: {
@@ -140,21 +176,27 @@ var app = new gxp.Viewer({
         //title: "Map",
         projection: "EPSG:900913",
         center: [-10764594.758211, 4523072.3184791],
-        zoom: 3,
+        zoom: 4,
         layers: [{
             source: "osm",
             name: "mapnik",
             group: "background"
-        }/*, {
+        }, {
             source: "local",
-            name: "usa:states",
+            name: "world:UTMZones",
             selected: true
-        }*/],
+        }, {
+            source: "local",
+            name: "usa:StatePlaneNAD83",
+            selected: true
+        }],
         items: [{
             xtype: "gx_zoomslider",
             vertical: true,
             height: 100
-        }]
+        }, {
+			xtype: "gxp_scaleoverlay"	//Anna: added scale bar
+		}]
     }
 
 });

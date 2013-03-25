@@ -16,3 +16,11 @@ body {
     font-size: 9px;
     bottom: 2px;
 }
+
+/* Anna added: */
+
+/* gxp_scaleoverlay */
+div.map-overlay {
+    right: 3px;
+    bottom: 15px;
+}
