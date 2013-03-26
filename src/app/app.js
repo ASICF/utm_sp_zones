@@ -37,10 +37,14 @@ var app = new gxp.Viewer({
             border: false,
             items: ["mymap"]
         }, {
-            id: "westcontainer",	//changed from 'westpanel' to add legend
-            xtype: "container",
-            layout: "vbox",	//changed from 'fit' to add legend
+            id: "westpanel",
+            xtype: "panel",
+            layout: "border",	//changed from 'fit' to add legend and have flexible borders
             region: "west",
+			split: true,	//allows to resize width
+			collapsible: true,	//adds posibility of collapsing west panel
+			collapseMode: "mini",	//makes collapsed view thinner
+			hideCollapseTool: true,	//hides default collapser, but with split:true resize tool works
             width: 200,
 			defaults: {	//from here down added to add legend
 				width: "100%",
@@ -48,11 +52,17 @@ var app = new gxp.Viewer({
 			},
 			items: [{
 				title: "Layers",
-				id: "westpanel",
+				id: "layerpanel",
+				region: "center",	//center region is required for border layout
 				border: false,
 				flex: 1
 			}, {
 				id: "legendpanel",
+				region: "south",
+				split: true,	//allows to resize height
+				collapsible: true,	//adds posibility of collapsing west panel
+				collapseMode: "mini",	//makes collapsed view thinner
+				hideCollapseTool: true,	//hides default collapser, but with split:true resize tool works
 				height: 250
 			}]
         }, {
@@ -94,7 +104,7 @@ var app = new gxp.Viewer({
             border: true,
             tbar: [] // we will add buttons to "tree.bbar" later
         },
-        outputTarget: "westpanel"
+        outputTarget: "layerpanel"
     }, {
         ptype: "gxp_addlayers",
         actionTarget: "tree.tbar"
@@ -131,7 +141,7 @@ var app = new gxp.Viewer({
 	}, {
         ptype: "gxp_queryform",
 		featureManager: "ftr_manager",
-        actionTarget: "map.tbar", //button is on map toolbar, GUI goes to new window
+        actionTarget: ["tree.tbar", "tree.contextMenu"], //button is on map toolbar, GUI goes to new window
 		autoExpand: "query",	//expands query when query tool is selected (query needs to be set as collapsible)
 		outputTarget: "query"	//where to place query controls
     }, {
@@ -151,12 +161,12 @@ var app = new gxp.Viewer({
 			//columnsSortable: !1	//false forbids from sorting and selecting output columns
 		}
 	}, {
-			ptype: "gxp_googlegeocoder",//Anna: added 4 lines by following sdk documentation by OpenGeo
-			outputTarget: "map.tbar",
-			outputConfig: {
-				emptyText: "Search for a location ..."	//Anna: how do I find such property in documentation???
-			}
-		}],
+		ptype: "gxp_googlegeocoder",//Anna: added 4 lines by following sdk documentation by OpenGeo
+		outputTarget: "map.tbar",
+		outputConfig: {
+			emptyText: "Search for a location ..."	//Anna: how do I find such property in documentation???
+		}
+	}],
     
     // layer sources
     sources: {
@@ -183,11 +193,11 @@ var app = new gxp.Viewer({
             group: "background"
         }, {
             source: "local",
-            name: "world:UTMZones",
+            name: "usa:StatePlaneNAD83",
             selected: true
         }, {
             source: "local",
-            name: "usa:StatePlaneNAD83",
+            name: "world:UTMZones",
             selected: true
         }],
         items: [{
