@@ -175,9 +175,12 @@ var app = new gxp.Viewer({
             url: "/geoserver/wms",
             version: "1.1.1"
         },
-        osm: {
-            ptype: "gxp_osmsource"
-        }
+		osm: {
+			ptype: "gxp_osmsource"
+		},
+		ol: {
+			ptype: "gxp_olsource"
+		}
     },
     
     // map and layers
@@ -192,6 +195,22 @@ var app = new gxp.Viewer({
             name: "mapnik",
             group: "background"
         }, {
+			source: "ol",
+			group: "background",
+			fixed: true,
+			type: "OpenLayers.Layer.Vector",
+			args: [
+				"None", /*{visibility: false}*/
+			]
+        }, {
+            source: "local",
+            name: "projects:US County Boundaries",
+            visibility:false
+        }, {
+            source: "local",
+            name: "projects:US State Boundaries",
+            selected: false
+        }, {
             source: "local",
             name: "usa:StatePlaneNAD83",
             selected: true
@@ -200,7 +219,7 @@ var app = new gxp.Viewer({
             name: "world:UTMZones",
             selected: true
         }],
-        items: [{
+        items: [ {
             xtype: "gx_zoomslider",
             vertical: true,
             height: 100
