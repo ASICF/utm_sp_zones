@@ -204,11 +204,11 @@ var app = new gxp.Viewer({
 			]
         }, {
             source: "local",
-            name: "projects:US County Boundaries",
+            name: "usa:US County Boundaries",
             visibility:false
         }, {
             source: "local",
-            name: "projects:US State Boundaries",
+            name: "usa:US State Boundaries",
             selected: false
         }, {
             source: "local",
